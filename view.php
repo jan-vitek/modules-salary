@@ -45,6 +45,7 @@ $salary->show_salary_tasks();
 
 ?>
 
+<tr><td></td><td align="right"><b>Note</b></td><td colspan=4><?php echo $salary->salary_note; ?></td></tr>
 
 </table>
 

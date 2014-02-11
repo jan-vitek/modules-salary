@@ -73,7 +73,7 @@ $titleBlock->show();
 $salary->show_user_tasks($user_id, $_GET['checked_FA']);
 
 ?>
-
+<tr><td><td align="right"><b>Note:</b></td><td colspan=4 align="center"><input type="text" name=salary_note style="width:99%"></td></tr>
 <tr><td colspan=6 align="right"><input type="submit" value="Submit" style="width:10%;"></td>
 
 </table>

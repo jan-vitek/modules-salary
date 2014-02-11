@@ -20,6 +20,7 @@ class CSalary extends w2p_Core_BaseObject
     public $payment_type_id = NULL;
     public $created_at = NULL;
     public $paid_at = NULL;
+    public $salary_note = NULL;
 
     public $_tbl = 'salaries';
     public $_tbl_key = 'salary_id';
@@ -146,7 +147,7 @@ class CSalary extends w2p_Core_BaseObject
      $q->addJoin('salaries', 's', 'st.salary_id = s.salary_id', 'left');
      $q->addJoin('user_tasks', 'u',  't.task_id = u.task_id', 'inner');
      $where = '(u.user_id = ' . $user_id . ') AND ';
-     $where .= '(t.task_target_budget > 0) AND ';
+     $where .= '(t.task_target_budget != 0) AND ';
      //$where .= '(v.value_charvalue IS NULL OR v.value_charvalue = "")';
      //$where .= '(s.user_id != ' . $AppUI->user_id . ')';
      $where .= '(t.task_id NOT IN (' . $paid_query->prepareSelect() . '))';
