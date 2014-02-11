@@ -43,7 +43,8 @@ class CSetupSalary
                         tax int(10) unsigned default NULL,
                         payment_type_id int(10) default NULL,
                         created_at datetime NOT NULL,
-                        paid_at datetime default NULL,                        
+                        paid_at datetime default NULL,
+                        salary_note text default NULL,                        
 
 			PRIMARY KEY  (salary_id))
 			ENGINE = MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
@@ -90,9 +91,13 @@ class CSetupSalary
 	{ 
 		global $AppUI;
 
-        $q = new w2p_Database_Query;
-		$q->dropTable('salary');
+                $q = new w2p_Database_Query;
+		$q->dropTable('salaries');
 		$q->exec();
+
+                $q = new w2p_Database_Query;
+                $q->dropTable('salaries_tasks');
+                $q->exec();
 
         $perms = $AppUI->acl();
         return $perms->unregisterModule('salary');
