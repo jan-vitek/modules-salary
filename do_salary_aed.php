@@ -45,6 +45,7 @@ foreach($checkboxes as $value) {
     $salary->add_task($value);
 }
 
+$salary->email_notification();
 
 $success = 'm=salary';
 $AppUI->redirect($success);

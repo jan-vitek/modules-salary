@@ -275,4 +275,40 @@ class CSalary extends w2p_Core_BaseObject
   }
 
 
+
+
+  public function email_notification()
+    {
+        $mail = new w2p_Utilities_Mail();
+        $mail->Subject("New salary: " . $this->salary_title, $this->_locale_char_set);
+
+        $mail->Body('Your new salary is accessible here: "' . W2P_BASE_URL . "/index.php?m=salary&a=view&salary_id=" . $this->salary_id , isset($GLOBALS['locale_char_set']) ? $GLOBALS['locale_char_set'] : '');
+
+        $users = $this->user_id . ",";
+        include ('config.php');
+        foreach ($SALARY_ACCOUNTING_USERS as $key => $value){
+          if($key != $this->user_id){
+            $users .= $key . ",";
+          }
+        }
+        $users = rtrim($users, ",");
+
+        global $AppUI;
+        $q = new w2p_Database_Query();
+        $q->addTable('users');
+        $q->addWhere("user_id IN (" . $users . ")" );
+        $res = $q->exec();
+        if (!$res) {
+              $AppUI->setMsg(db_error(), UI_MSG_ERROR);
+              $q->clear();
+              $AppUI->redirect();
+        }  
+        while ($row = db_fetch_assoc($res)) {
+          if ($mail->ValidEmail($row['user_username'])) {
+              $mail->To($row['user_username'], true);
+              $mail->Send();
+          }
+        }
+        return '';
+    }
 }
