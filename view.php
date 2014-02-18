@@ -24,7 +24,7 @@ if (w2PgetParam($_POST, 'paid', '') != '') {
 
 
 
-$titleBlock = new w2p_Theme_TitleBlock( 'Salary ' . $salary->salar_title, 'colored_folder.png', $m, "$m.$a" );
+$titleBlock = new w2p_Theme_TitleBlock( 'Salary - ' . $salary->salary_title, 'payment-icon.png', $m, "$m.$a" );
 $titleBlock->show() ;
 
 ?>

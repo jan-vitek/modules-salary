@@ -45,9 +45,9 @@ if ( $salary_id && !$salary->load( $salary_id )) {
 }
 
 if ( $salary_id ) {
-	$titleBlock = new w2p_Theme_TitleBlock( 'Editing salary ' . $salary.salary_title, 'colored_folder.png', $m, "$m.$a" );
+	$titleBlock = new w2p_Theme_TitleBlock( 'Editing salary - ' . $salary.salary_title, 'payment-icon.png', $m, "$m.$a" );
 } else {
-        $titleBlock = new w2p_Theme_TitleBlock( 'New salary', 'colored_folder.png', $m, "$m.$a" );
+        $titleBlock = new w2p_Theme_TitleBlock( 'New salary - ' . $salary->resolve_username($user_id) , 'payment-icon.png', $m, "$m.$a" );
 }
 
 $titleBlock->show();

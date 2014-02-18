@@ -6,6 +6,7 @@ if (!defined('W2P_BASE_DIR')) {
 global $AppUI;
 
 $user_id = $AppUI->user_id;
+include ('config.php');
 
 if($SALARY_ACCOUNTING_USERS[$AppUI->user_id] != '1') {
   if (w2PgetParam($_GET, 'user_id', '') != '') {
@@ -45,7 +46,8 @@ foreach($checkboxes as $value) {
     $salary->add_task($value);
 }
 
-$salary->email_notification();
-
+if ($NEW_SALARY_NOTIFY){
+  $salary->email_notification();
+}
 $success = 'm=salary';
 $AppUI->redirect($success);

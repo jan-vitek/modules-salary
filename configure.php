@@ -47,8 +47,15 @@ if (w2PgetParam($_POST, 'Save', '') != '') {
                         foreach ($_POST["user"] as $key => $value) {
                           fwrite($handle, "\$SALARY_ACCOUNTING_USERS['" . $key . "'] = '" . $value . "';\n");
                         }
-
-			fwrite($handle, "?>\n");
+                        if ($_POST["notify_new"]){
+                          fwrite($handle, '$NEW_SALARY_NOTIFY = ' . $_POST["notify_new"] . ";\n");
+                        }
+                        
+                        $percent_done = $_POST["percent_done"] ? $_POST["percent_done"] : 100;
+                        fwrite($handle, '$PERCENT_DONE = ' . $percent_done . ";\n");
+                        
+                        fwrite($handle, "?>\n");
+                     
 			$AppUI->setMsg($CONFIG_FILE . ' ' . $AppUI->_('has been successfully updated'), UI_MSG_OK);
 			fclose($handle);
 			require ($CONFIG_FILE);
@@ -80,7 +87,7 @@ $titleBlock->show();
             <td></td>
         </tr>
         <tr>
-            <td><i>add by username:</i>
+            <td align="right"><i>add by username:</i>
             <td><input type="text" name="new_user" /></td>
         </tr>
         <?php
@@ -100,6 +107,14 @@ $titleBlock->show();
             }
           }
         ?>
+        <tr> 
+        <td><b>New salary notification:</b></td>
+        <td align="left"><input type="checkbox" name="notify_new" value=1 <?php echo $NEW_SALARY_NOTIFY?"checked=\"checked\"":""?> /></td>
+        </tr>
+        <tr>
+        <td><b>Progress to be paid:</b></td>
+        <td align="left"><input type="text" name="percent_done" style="width:20%" value= <?php echo $PERCENT_DONE ? $PERCENT_DONE : "100"?> />%</td>
+        </tr>
         <tr>
             <td colspan="2" align="right"><input type="Submit" name="Cancel" value="<?php echo $AppUI->_('back')?>" /><input type="Submit" name="Save" value="<?php echo $AppUI->_('save')?>" /></td>
         </tr>

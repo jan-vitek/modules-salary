@@ -39,11 +39,13 @@ class CSalary extends w2p_Core_BaseObject
         return $errorArray;
 	}
 
+/*
     public function delete(w2p_Core_CAppUI $AppUI)
     {
         $this->load();
         return $this->store($AppUI);
     }
+*/
 /*
     public function store(w2p_Core_CAppUI $AppUI)
     {
@@ -94,8 +96,14 @@ class CSalary extends w2p_Core_BaseObject
     public function show_salary( ) 
     {
         global $AppUI ;
+        include ('config.php');
+          if($SALARY_ACCOUNTING_USERS[$AppUI->user_id] == '1') {
+            $enable_delete = true;
+          }
         echo "<tr>\n<td valign=\"top\">";
-        $s = "<a href=\"?m=salary&a=view&salary_id=" . $this->salary_id ;
+        $s = "";
+        $enable_delete ? $s .= '<a style="color:red" href="?m=salary&a=delete&salary_id=' . $this->salary_id . '">' . "delete " . "</a>" : NULL ;
+        $s .= "<a href=\"?m=salary&a=view&salary_id=" . $this->salary_id ;
         $s .= "\" >" . $this->salary_title . "</a></td>" ;
         echo $s ;
         #echo "<td valign=\"top\">" . $this->amount . "</td>" ;
@@ -107,12 +115,16 @@ class CSalary extends w2p_Core_BaseObject
         echo "</tr>\n" ;
     }
 
-   public function select_salaries ()
+   public function select_salaries ($filter_user_id = NULL)
    { 
      global $AppUI;
      include ('config.php');
      $q = new w2p_Database_Query();
      $q->addTable('salaries');
+     if($filter_user_id != NULL) {
+       $where = "user_id = " . $filter_user_id ;
+       $q->addWhere( "(" . $where . ")" );
+     }
      if($SALARY_ACCOUNTING_USERS[$AppUI->user_id] != '1') {
        $where = "user_id = " . $AppUI->user_id ;
        $q->addWhere( "(" . $where . ")" );
@@ -133,6 +145,7 @@ class CSalary extends w2p_Core_BaseObject
    public function show_user_tasks($user_id, $checked_FA)
    {
      global $AppUI;
+     include ('config.php'); 
      $paid_query = new w2p_Database_Query();
      $paid_query->addQuery('st1.task_id');
      $paid_query->addTable('salaries', 's1');
@@ -148,9 +161,11 @@ class CSalary extends w2p_Core_BaseObject
      $q->addJoin('user_tasks', 'u',  't.task_id = u.task_id', 'inner');
      $where = '(u.user_id = ' . $user_id . ') AND ';
      $where .= '(t.task_target_budget != 0) AND ';
+     $where .= '(t.task_percent_complete >= ' . $PERCENT_DONE . ') AND';
      //$where .= '(v.value_charvalue IS NULL OR v.value_charvalue = "")';
      //$where .= '(s.user_id != ' . $AppUI->user_id . ')';
      $where .= '(t.task_id NOT IN (' . $paid_query->prepareSelect() . '))';
+     $where .= ' GROUP BY t.task_id';
 
 
      $q->addWhere($where);
@@ -255,7 +270,7 @@ class CSalary extends w2p_Core_BaseObject
     $q->exec();
   }
 
-  public function user_select(){
+  public function user_select($action){
     global $AppUI;
     $q = new w2p_Database_Query();
     $q->addTable('users');
@@ -265,11 +280,19 @@ class CSalary extends w2p_Core_BaseObject
                 $q->clear();
                 $AppUI->redirect();
      }
+    switch($action){
+      case "addedit":
+        $field_title = "Create salary for another user";
+        break;
+      case "index":
+        $field_title = "Filter by user";
+        break;
+    }    
 
     echo '<select name="users" onchange="this.options[this.selectedIndex].value && (window.location = this.options[this.selectedIndex].value);">';
-    echo '<option value="">Create salary for other user</option>';
+    echo '<option value="">' . $field_title . '</option>';
     while ($row = db_fetch_assoc($res)) {
-      echo '<option value="?m=salary&amp;a=addedit&amp;user_id=' . $row[user_id] . '">' . $row[user_username] . "</option>";
+      echo '<option value="?m=salary&amp;a=' . $action . '&amp;user_id=' . $row[user_id] . '">' . $row[user_username] . "</option>";
     }
     echo '</select>';
   }
@@ -311,4 +334,46 @@ class CSalary extends w2p_Core_BaseObject
         }
         return '';
     }
+
+    public function resolve_username($user_id)
+      {
+        global $AppUI;
+        $q = new w2p_Database_Query();
+        $q->addTable('users');
+        $q->addWhere("user_id = " . ($user_id != NULL ? $user_id : $AppUI->user_id) );
+        $res = $q->exec();
+        if (!$res) {
+              $AppUI->setMsg(db_error(), UI_MSG_ERROR);
+              $q->clear();
+              $AppUI->redirect();
+        }
+        while ($row = db_fetch_assoc($res)) {
+          return $row['user_username'];
+        }
+      }
+
+
+    public function delete()
+      {
+        $q = new w2p_Database_Query();
+        $q->setDelete('salaries_tasks');
+        $q->addWhere('salary_id = ' . $this->salary_id);
+        $res = $q->exec();
+        if($res){
+          $q = new w2p_Database_Query();
+          $q->setDelete('salaries');
+          $q->addWhere('salary_id = ' . $this->salary_id);
+          $res = $q->exec();
+          if(!$res){
+            $AppUI->setMsg(db_error(), UI_MSG_ERROR);
+            $q->clear();
+            $AppUI->redirect();
+           }
+        } else {
+          $AppUI->setMsg(db_error(), UI_MSG_ERROR);
+          $q->clear();
+          $AppUI->redirect();
+        }
+
+      }
 }
