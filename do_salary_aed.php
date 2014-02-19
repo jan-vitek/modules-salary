@@ -8,7 +8,7 @@ global $AppUI;
 $user_id = $AppUI->user_id;
 include ('config.php');
 
-if($SALARY_ACCOUNTING_USERS[$AppUI->user_id] != '1') {
+if($SALARY_ACCOUNTING_USERS[$AppUI->user_id] == '1') {
   if (w2PgetParam($_GET, 'user_id', '') != '') {
     $user_id = $_GET['user_id'];
   }
