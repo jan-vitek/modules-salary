@@ -13,7 +13,7 @@ if ( ! $perms->checkModule( 'Salary', 'view', $user_id ) ) {
 }
 
 global $AppUI;
-     $file_handle = fopen("/var/www/zlobr.cz/web/w2p/modules/salary/csvtasks.csv", 'r');
+     $file_handle = fopen("/var/www/tmlink.cz/web/w2p/modules/salary/csvtasks.csv", 'r');
      echo "test" . $file_handle;
 
      while (!feof($file_handle) ) {

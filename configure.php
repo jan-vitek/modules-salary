@@ -73,7 +73,7 @@ $SALARY_ACCOUNTING_USERS[40] = true;
 //Read the current config values from the config file and update the array.
 
 // setup the title block
-$titleBlock = new w2p_Theme_TitleBlock('Salary Module Configuration', 'icon.png', $m,  $m . '.' . $a);
+$titleBlock = new w2p_Theme_TitleBlock('Salary Module Configuration', 'payment-icon.png', $m,  $m . '.' . $a);
 $titleBlock->addCrumb('?m=system', 'System Admin');
 $titleBlock->addCrumb('?m=system&a=viewmods', 'Modules');
 $titleBlock->show();

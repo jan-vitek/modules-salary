@@ -199,6 +199,8 @@ class CSalary extends w2p_Core_BaseObject
 
    public function build_tasks_table ($res, $show_checkboxes = false, $checked_FA = false)
    {
+       global $AppUI;
+       include ('config.php');
        while ($row = db_fetch_assoc($res)) {
        echo "<tr>";
        echo "<td valign=\"top\">" ;
@@ -227,7 +229,7 @@ class CSalary extends w2p_Core_BaseObject
        if(!$show_checkboxes){
          if($this->paid_at){
            echo "<td>Paid on " . date("d.m.Y", strtotime($this->paid_at)) . "</td></tr>";
-         } elseif($SALARY_ACCOUNTING_USERS[$AppUI->user_id] != '1') {
+         } elseif($SALARY_ACCOUNTING_USERS[$AppUI->user_id] == '1') {
            ?>
            <form name="frmAddEdit" action="?m=salary&a=view&salary_id=<?php echo (string)$this->salary_id; ?>" method="post" >
              <td align="center"><input type="submit" value="Confirm payment" style="width:100%;" name="paid"></td></tr>
