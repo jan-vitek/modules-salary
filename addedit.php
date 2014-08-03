@@ -19,6 +19,7 @@ if($SALARY_ACCOUNTING_USERS[$AppUI->user_id] == '1') {
 
 
 <script type="text/javascript">
+        
         function UpdateTotalSalary (target, value) {
             var sum_field = document.getElementById("salary_sum")
             var curr_val = parseInt(sum_field.innerHTML)
@@ -30,6 +31,21 @@ if($SALARY_ACCOUNTING_USERS[$AppUI->user_id] == '1') {
                 curr_val -= operation_val
             }
             sum_field.innerHTML = curr_val
+        }
+        
+        function addFileRow () {
+          var table = document.getElementById("salary_table");
+
+          var rowCount = table.rows.length;
+          var row = table.insertRow(rowCount - 3);
+
+          row.insertCell(0);
+          var cell1 = row.insertCell(1);
+          cell1.setAttribute("colspan", 5);
+          var element1 = document.createElement("input");
+          element1.type = "file";
+          element1.name="attachment[]";
+          cell1.appendChild(element1);
         }
 </script>
 
@@ -55,8 +71,8 @@ $titleBlock->show();
 ?>
 
 
-<form name="frmAddEdit" action="?m=salary&a=do_salary_aed&user_id=<?php echo $user_id; ?>" method="post" >
-<table border="0" width="100%" cellspacing="1" cellpadding="2" class="tbl">
+<form name="frmAddEdit" action="?m=salary&a=do_salary_aed&user_id=<?php echo $user_id; ?>" method="post" enctype="multipart/form-data">
+<table border="0" width="100%" cellspacing="1" cellpadding="2" class="tbl" id="salary_table">
 <tr>
         <th width="1%"></th>
         <th width="39%">Task name</th>
@@ -73,6 +89,7 @@ $titleBlock->show();
 $salary->show_user_tasks($user_id, $_GET['checked_FA']);
 
 ?>
+<tr><td><td colspan=5><INPUT type="button" value="Add File" onclick="addFileRow()" /></td></tr>
 <tr><td><td align="right"><b>Note:</b></td><td colspan=4 align="center"><input type="text" name=salary_note style="width:99%"></td></tr>
 <tr><td colspan=6 align="right"><input type="submit" value="Submit" style="width:10%;"></td>
 

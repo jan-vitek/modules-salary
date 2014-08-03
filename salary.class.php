@@ -86,7 +86,7 @@ class CSalary extends w2p_Core_BaseObject
       $q->addJoin('custom_fields_values', 'v', '(v.value_object_id = st.task_id) and v.value_field_id = 3', 'left');
       $q->addJoin('tasks', 't',  'st.task_id = t.task_id', 'inner');
       $q->addJoin('user_tasks', 'u',  't.task_id = u.task_id', 'inner');
-      $q->addWhere("st.salary_id = " . $this->salary_id . " AND u.user_id = " . $this->user_id );
+      $q->addWhere("st.salary_id = " . $this->salary_id . " AND u.user_id = " . "2" );
       $res = $q->exec();
       while($row = db_fetch_assoc($res)){ 
         return $row[0];
@@ -186,7 +186,7 @@ class CSalary extends w2p_Core_BaseObject
       $q->addJoin('custom_fields_values', 'v', '(v.value_object_id = st.task_id) and v.value_field_id = 3', 'left');
       $q->addJoin('tasks', 't',  'st.task_id = t.task_id', 'inner');
       $q->addJoin('user_tasks', 'u',  't.task_id = u.task_id', 'inner');
-      $q->addWhere("st.salary_id = " . $this->salary_id . " AND u.user_id = " . $this->user_id );
+      $q->addWhere("st.salary_id = " . $this->salary_id . " AND u.user_id = " . 2 );
       $res = $q->exec();
       if (!$res) {
                 $AppUI->setMsg(db_error(), UI_MSG_ERROR);
@@ -194,6 +194,21 @@ class CSalary extends w2p_Core_BaseObject
                 $AppUI->redirect();
      }
      $this->build_tasks_table($res);
+   }
+
+   public function show_salary_files()
+   {
+     global $AppUI;
+     $q = new w2p_Database_Query();
+     $q->addTable('salaries_files', 'sf');
+     $q->addWhere("sf.salary_id = " . $this->salary_id);
+     $res = $q->exec();
+     if (!$res) {
+                $AppUI->setMsg(db_error(), UI_MSG_ERROR);
+                $q->clear();
+                $AppUI->redirect();
+     }
+     $this->build_files_table($res);
    }
 
 
@@ -244,6 +259,18 @@ class CSalary extends w2p_Core_BaseObject
 
    }
 
+  public function build_files_table($res){
+    global $AppUI;
+    while ($row = db_fetch_assoc($res)) {
+      echo "<tr>";
+      echo "<td></td>";
+      echo "<td colspan=5>";
+      echo "<a href=\"?m=salary&a=filedownloader&file=" . $row[0] . "\">" . $row[2] . "</a>";
+      echo "</td>";
+      echo "</tr>";
+    }  
+  }
+
 
   public function store()
   {
@@ -269,6 +296,17 @@ class CSalary extends w2p_Core_BaseObject
     $q->addTable('salaries_tasks');
     $q->addInsert('salary_id', $this->salary_id);
     $q->addInsert('task_id', $task_id);
+    $q->exec();
+  }
+
+  public function add_file($file_name, $file_type, $file_size)
+  {
+    $q = new w2p_Database_Query;
+    $q->addTable('salaries_files');
+    $q->addInsert('salary_id', $this->salary_id);
+    $q->addInsert('file_name', $file_name);
+    $q->addInsert('file_type', $file_type);
+    $q->addInsert('file_size', $file_size);
     $q->exec();
   }
 

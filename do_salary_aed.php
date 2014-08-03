@@ -49,5 +49,38 @@ foreach($checkboxes as $value) {
 if ($NEW_SALARY_NOTIFY){
   $salary->email_notification();
 }
+
+$target_path = W2P_BASE_DIR . "/modules/salary/attachments/" . $salary->salary_id . "-";
+
+
+function reArrayFiles(&$file_post) {
+
+    $file_ary = array();
+    $file_count = count($file_post['name']);
+    $file_keys = array_keys($file_post);
+
+    for ($i=0; $i<$file_count; $i++) {
+        foreach ($file_keys as $key) {
+            $file_ary[$i][$key] = $file_post[$key][$i];
+        }
+    }
+
+    return $file_ary;
+}
+
+
+    $file_ary = reArrayFiles($_FILES['attachment']);
+
+    foreach ($file_ary as $file) {
+    $file_name = $salary->salary_id . "-" . $file['name'];
+    $target_file_path = $target_path . $file_name;
+    if(move_uploaded_file($file['tmp_name'], $target_file_path)) {
+        $salary->add_file($file_name, $file['type'], $file['size']);
+      } else{
+        error_log("There was an error uploading a file, please try again!");
+      }
+    }  
+
+
 $success = 'm=salary';
 $AppUI->redirect($success);

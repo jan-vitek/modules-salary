@@ -42,7 +42,7 @@ $titleBlock->show() ;
 <?php
 
 $salary->show_salary_tasks();
-
+$salary->show_salary_files();
 ?>
 
 <tr><td></td><td align="right"><b>Note</b></td><td colspan=4><?php echo $salary->salary_note; ?></td></tr>

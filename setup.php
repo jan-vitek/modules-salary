@@ -64,6 +64,21 @@ class CSetupSalary
         $q->createDefinition($sql);
         $q->exec();
         $q->clear();
+
+        $q = new w2p_Database_Query();
+                $q->createTable('salaries_files');
+                $sql = '(
+                        salary_file_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+                        salary_id int(10) unsigned NOT NULL,
+                        file_name varchar(255) NOT NULL,
+                        file_size int(10) unsigned NOT NULL,
+                        file_type varchar(255) NOT NULL,
+
+                        PRIMARY KEY  (salary_file_id))
+                        ENGINE = MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
+        $q->createDefinition($sql);
+        $q->exec();
+        $q->clear();
 /*
         $q->addTable('salary','sl');
         $q->addInsert('salary_URL_use','salary_base_URL');
@@ -97,6 +112,10 @@ class CSetupSalary
 
                 $q = new w2p_Database_Query;
                 $q->dropTable('salaries_tasks');
+                $q->exec();
+
+                $q = new w2p_Database_Query;
+                $q->dropTable('salaries_files');
                 $q->exec();
 
         $perms = $AppUI->acl();
