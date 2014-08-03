@@ -13,7 +13,7 @@ if (!defined('W2P_BASE_DIR')){
 
 $config = array();
 $config['mod_name']        = 'Salary';				// name the module
-$config['mod_version']     = '1.0.0';				// add a version number
+$config['mod_version']     = '1.0.1';				// add a version number
 $config['mod_directory']   = 'salary';				// tell web2project where to find this module
 $config['mod_setup_class'] = 'CSetupSalary';			// the name of the PHP setup class (used below)
 $config['mod_type']        = 'user';				// 'core' for modules distributed with w2p by standard, 'user' for additional modules
@@ -95,7 +95,20 @@ class CSetupSalary
 	{
         switch ($old_version) {
             case '1.0.0':
-            case '1.0.1':
+                $q = new w2p_Database_Query();
+                $q->createTable('salaries_files');
+                $sql = '(
+                        salary_file_id int(10) unsigned NOT NULL AUTO_INCREMENT,
+                        salary_id int(10) unsigned NOT NULL,
+                        file_name varchar(255) NOT NULL,
+                        file_size int(10) unsigned NOT NULL,
+                        file_type varchar(255) NOT NULL,
+
+                        PRIMARY KEY  (salary_file_id))
+                        ENGINE = MYISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
+                $q->createDefinition($sql);
+                $q->exec();
+                $q->clear();
             default:
 				//do nothing
 		}
