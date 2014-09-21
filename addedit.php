@@ -50,18 +50,19 @@ if($SALARY_ACCOUNTING_USERS[$AppUI->user_id] == '1') {
 </script>
 
 <?php
-$salary_id = w2PgetParam($_REQUEST, 'salary_id', 0);
+//$salary_id = w2PgetParam($_request, 'salary_id', 0);
+$salary_id = $_GET['salary_id'];
 
 $salary = new CSalary();
 
-if ( $salary_id && !$salary->load( $salary_id )) {
-        $AppUI->setMsg( 'Salary' );
-        $AppUI->setMsg( 'invalidID', UI_MSG_ERROR, true );
-        $AppUI->redirect();
-}
+//if ( $salary_id && !$salary->load( $salary_id )) {
+//        $AppUI->setMsg( 'Salary' );
+//        $AppUI->setMsg( 'invalidID', UI_MSG_ERROR, true );
+//        $AppUI->redirect();
+//}
 
 if ( $salary_id ) {
-	$titleBlock = new w2p_Theme_TitleBlock( 'Editing salary - ' . $salary.salary_title, 'payment-icon.png', $m, "$m.$a" );
+	$titleBlock = new w2p_Theme_TitleBlock( 'Editing salary - ' . $salary->salary_title, 'payment-icon.png', $m, "$m.$a" );
 } else {
         $titleBlock = new w2p_Theme_TitleBlock( 'New salary - ' . $salary->resolve_username($user_id) , 'payment-icon.png', $m, "$m.$a" );
 }
@@ -71,7 +72,7 @@ $titleBlock->show();
 ?>
 
 
-<form name="frmAddEdit" action="?m=salary&a=do_salary_aed&user_id=<?php echo $user_id; ?>" method="post" enctype="multipart/form-data">
+<form name="frmAddEdit" action="?m=salary&a=do_salary_aed&user_id=<?php echo $user_id; ?>&salary_id=<?php echo $salary_id?>" method="post" enctype="multipart/form-data">
 <table border="0" width="100%" cellspacing="1" cellpadding="2" class="tbl" id="salary_table">
 <tr>
         <th width="1%"></th>
@@ -85,12 +86,16 @@ $titleBlock->show();
 
 <?php
 
-
-$salary->show_user_tasks($user_id, $_GET['checked_FA']);
+if ( $salary_id ) {
+  $salary->show_salary_tasks();
+  $salary->show_salary_files();
+} else {
+  $salary->show_user_tasks($user_id, $_GET['checked_FA']);
+}
 
 ?>
 <tr><td><td colspan=5><INPUT type="button" value="Add File" onclick="addFileRow()" /></td></tr>
-<tr><td><td align="right"><b>Note:</b></td><td colspan=4 align="center"><input type="text" name=salary_note style="width:99%"></td></tr>
+<tr><td><td align="right"><b>Note:</b></td><td colspan=4 align="center"><input type="text" name=salary_note style="width:99%" value="<?php echo $salary->salary_note ?>"></td></tr>
 <tr><td colspan=6 align="right"><input type="submit" value="Submit" style="width:10%;"></td>
 
 </table>

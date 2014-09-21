@@ -13,41 +13,45 @@ if($SALARY_ACCOUNTING_USERS[$AppUI->user_id] == '1') {
     $user_id = $_GET['user_id'];
   }
 }
+$salary_id = $_GET['salary_id'];
+
 
 
 $salary = new CSalary();
 $salary->bind( $_POST );
 
-$q = new w2p_Database_Query;
-$q->addTable('users');
-$q->addWhere('user_id = ' . $user_id);
-$res = $q->exec();
+if (!$salary_id){
+  $q = new w2p_Database_Query;
+  $q->addTable('users');
+  $q->addWhere('user_id = ' . $user_id);
+  $res = $q->exec();
 
-if (!$res) {
+  if (!$res) {
                 $AppUI->setMsg(db_error(), UI_MSG_ERROR);
                 $q->clear();
                 $AppUI->redirect();
      }
 
-$user_name = '';
+  $user_name = '';
 
-while ($row = db_fetch_assoc($res)) {
+  while ($row = db_fetch_assoc($res)) {
 	$user_name = $row[user_username];
-}
+  }
 
-$salary->created_at = date("Y-m-d H:i:s");
-$salary->salary_title = $user_name . "-" . date("Y-m-d H:i:s");
-$salary->user_id = $user_id; 
-$salary->store();
+  $salary->created_at = date("Y-m-d H:i:s");
+  $salary->salary_title = $user_name . "-" . date("Y-m-d H:i:s");
+  $salary->user_id = $user_id; 
+  $salary->store();
 
 
-$checkboxes = isset($_POST['task']) ? $_POST['task'] : array();
-foreach($checkboxes as $value) {
+  $checkboxes = isset($_POST['task']) ? $_POST['task'] : array();
+  foreach($checkboxes as $value) {
     $salary->add_task($value);
-}
+  }
 
-if ($NEW_SALARY_NOTIFY){
-  $salary->email_notification();
+  if ($NEW_SALARY_NOTIFY){
+    $salary->email_notification();
+  }
 }
 
 $target_path = W2P_BASE_DIR . "/modules/salary/attachments/" . $salary->salary_id . "-";
@@ -81,6 +85,9 @@ function reArrayFiles(&$file_post) {
       }
     }  
 
-
-$success = 'm=salary';
+if ($salary_id) {
+  $success = 'm=salary&a=view&salary_id=' . $salary_id;
+} else {
+  $success = 'm=salary';
+}
 $AppUI->redirect($success);
