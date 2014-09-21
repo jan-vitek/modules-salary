@@ -86,7 +86,7 @@ class CSalary extends w2p_Core_BaseObject
       $q->addJoin('custom_fields_values', 'v', '(v.value_object_id = st.task_id) and v.value_field_id = 3', 'left');
       $q->addJoin('tasks', 't',  'st.task_id = t.task_id', 'inner');
       $q->addJoin('user_tasks', 'u',  't.task_id = u.task_id', 'inner');
-      $q->addWhere("st.salary_id = " . $this->salary_id . " AND u.user_id = " . "2" );
+      $q->addWhere("st.salary_id = " . $this->salary_id . " AND u.user_id = " . $this->user_id );
       $res = $q->exec();
       while($row = db_fetch_assoc($res)){ 
         return $row[0];
@@ -186,7 +186,7 @@ class CSalary extends w2p_Core_BaseObject
       $q->addJoin('custom_fields_values', 'v', '(v.value_object_id = st.task_id) and v.value_field_id = 3', 'left');
       $q->addJoin('tasks', 't',  'st.task_id = t.task_id', 'inner');
       $q->addJoin('user_tasks', 'u',  't.task_id = u.task_id', 'inner');
-      $q->addWhere("st.salary_id = " . $this->salary_id . " AND u.user_id = " . 2 );
+      $q->addWhere("st.salary_id = " . $this->salary_id . " AND u.user_id = " . $this->user_id );
       $res = $q->exec();
       if (!$res) {
                 $AppUI->setMsg(db_error(), UI_MSG_ERROR);
