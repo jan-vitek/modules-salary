@@ -52,6 +52,10 @@ if (!$salary_id){
   if ($NEW_SALARY_NOTIFY){
     $salary->email_notification();
   }
+} else {
+  $salary->load($salary_id);
+  $salary->salary_note = $_POST['salary_note'];
+  $salary->store();
 }
 
 $target_path = W2P_BASE_DIR . "/modules/salary/attachments/" . $salary->salary_id . "-";
@@ -76,7 +80,7 @@ function reArrayFiles(&$file_post) {
     $file_ary = reArrayFiles($_FILES['attachment']);
 
     foreach ($file_ary as $file) {
-    $file_name = $salary->salary_id . "-" . $file['name'];
+    $file_name = $file['name'];
     $target_file_path = $target_path . $file_name;
     if(move_uploaded_file($file['tmp_name'], $target_file_path)) {
         $salary->add_file($file_name, $file['type'], $file['size']);

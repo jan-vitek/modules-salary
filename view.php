@@ -47,6 +47,8 @@ $salary->show_salary_files();
 ?>
 
 <tr><td></td><td align="right"><b>Note</b></td><td colspan=4><?php echo $salary->salary_note; ?></td></tr>
-
+<tr><td colspan=6 align="right">
+<button onclick="location.href='index.php?m=salary&a=addedit&salary_id=<?php echo $_GET['salary_id'] ?>'">edit</button>
+</td>
 </table>
 

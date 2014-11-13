@@ -1,5 +1,7 @@
 <?php
 
+
+
 if (!defined('W2P_BASE_DIR')) {
     die('You should not access this file directly.');
 }
@@ -20,17 +22,17 @@ $q->addTable('salaries_files');
 $q->addWhere( "salary_file_id = " . $_GET["file"] );
 $res = $q->exec();
 if($row = db_fetch_assoc($res)){
-    ob_end_clean();
-    header('MIME-Version: 1.0');
-    header('Pragma: ');
-    header('Cache-Control: public');
-    header('Content-length: ' . $row[3]);
-    header('Content-type: ' . $row[4]);
-    header('Content-transfer-encoding: 8bit');
-    header('Content-disposition: attachment; filename="' . $row[2] . '"');
-
-    $fileclass->getFileSystem()->read(W2P_BASE_DIR . '/modules/salary/attachments/' . $row[2]);
-
-    flush();
+ob_start();  
+  $file=W2P_BASE_DIR . '/modules/salary/attachments/' . $row[2];
+    header('Content-Description: File Transfer');
+    header('Content-Type: application/octet-stream');
+    header('Content-Disposition: attachment; filename='.basename($file));
+    header('Content-Transfer-Encoding: binary');
+    header('Expires: 0');
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Pragma: public');
+    header('Content-Length: ' . filesize($file));
+    readfile($file);
+ob_end_flush();
 }
 ?>

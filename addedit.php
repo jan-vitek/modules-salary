@@ -55,11 +55,11 @@ $salary_id = $_GET['salary_id'];
 
 $salary = new CSalary();
 
-//if ( $salary_id && !$salary->load( $salary_id )) {
-//        $AppUI->setMsg( 'Salary' );
-//        $AppUI->setMsg( 'invalidID', UI_MSG_ERROR, true );
-//        $AppUI->redirect();
-//}
+if ( $salary_id && !$salary->load( $salary_id )) {
+        $AppUI->setMsg( 'Salary' );
+        $AppUI->setMsg( 'invalidID', UI_MSG_ERROR, true );
+        $AppUI->redirect();
+}
 
 if ( $salary_id ) {
 	$titleBlock = new w2p_Theme_TitleBlock( 'Editing salary - ' . $salary->salary_title, 'payment-icon.png', $m, "$m.$a" );
