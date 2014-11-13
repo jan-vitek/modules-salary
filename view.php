@@ -19,6 +19,7 @@ $salary->load($_GET['salary_id']);
 
 if (w2PgetParam($_POST, 'paid', '') != '') {
   $salary->paid_at = date("Y-m-d H:i:s");
+  $salary->after_paid_actions();
   $salary->store();
 }
 

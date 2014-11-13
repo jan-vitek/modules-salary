@@ -16,7 +16,7 @@ if ( ! $perms->checkModule( 'Salary', 'view', $user_id ) ) {
 include ('config.php');
 if($SALARY_ACCOUNTING_USERS[$AppUI->user_id] == '1') {
   $salary = new CSalary();
-  $salary = $salary->load($_GET['salary_id']);
+  $salary->load($_GET['salary_id']);
   $salary->delete();
 }
 $AppUI->redirect(parse_url($_SERVER["HTTP_REFERER"], PHP_URL_QUERY));
