@@ -399,21 +399,53 @@ class CSalary extends w2p_Core_BaseObject
         $q->setDelete('salaries_tasks');
         $q->addWhere('salary_id = ' . $this->salary_id);
         $res = $q->exec();
+        
         if($res){
           $q = new w2p_Database_Query();
           $q->setDelete('salaries');
           $q->addWhere('salary_id = ' . $this->salary_id);
           $res = $q->exec();
-          if(!$res){
-            $AppUI->setMsg(db_error(), UI_MSG_ERROR);
-            $q->clear();
-            $AppUI->redirect();
-           }
-        } else {
+          if($res){
+            $q = new w2p_Database_Query();
+            $q->setDelete('salaries_files');
+            $q->addWhere('salary_id = ' . $this->salary_id);
+            $res = $q->exec();
+            if($res){ 
+              $target_path = W2P_BASE_DIR . "/modules/salary/attachments/" . $this->salary_id . "-";
+              foreach (glob($target_path."*") as $filename) {
+                unlink($filename);
+              }
+            }
+          }
+        }
+        if(!$res) {
           $AppUI->setMsg(db_error(), UI_MSG_ERROR);
           $q->clear();
           $AppUI->redirect();
         }
 
       }
+
+    public function after_paid_actions(){
+      $q = new w2p_Database_Query();
+      $q->addTable('salaries_tasks');
+      $q->addWhere("salary_id = " . $this->salary_id);
+      $res = $q->exec();
+      while($row = db_fetch_assoc($res)){
+        //set worker_fa field
+        $q = new w2p_Database_Query();
+        $q->addTable('custom_fields_values');
+        $q->addUpdate('value_charvalue', 'concat(value_charvalue, "'.$this->resolve_username($this->user_id).'-'.$this->salary_id.' ")', false, true);
+        $q->addWhere('value_object_id = '. $row[task_id]);
+        $q->addWhere('value_field_id = 3');
+        $q->exec();
+        //set task %
+        $q = new w2p_Database_Query();
+        $q->addTable('tasks');
+        $q->addUpdate('task_percent_complete', 100);
+        $q->addWhere('task_id ='. $row[task_id] );
+        $q->exec();
+      }
+
+    }
 }
